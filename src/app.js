@@ -147,7 +147,9 @@ json('./data/tracts.geojson').then(function (bb) {
 
 
   function renderChart() {
-    const g = select('g');
+    const g = document.querySelector('svg');
+    console.log('svg')
+    console.log(g)
     removeChildren(g)
 
     removeChildren(svg)
