@@ -146,10 +146,7 @@ json('./data/tracts.geojson').then(function (bb) {
 
 
   function renderChart() {
-    const g = document.querySelector('svg');
-    console.log('svg')
-    console.log(g)
-    removeChildren(g)
+
 
     removeChildren(svg)
 
@@ -168,6 +165,12 @@ json('./data/tracts.geojson').then(function (bb) {
     console.log(borough)
     console.log("f:")
     console.log(f)
+
+    console.log("in renderCHart()")
+    const g = document.querySelector('svg');
+    console.log('svg')
+    console.log(g)
+    removeChildren(g)
 
     let width = 500, height = 500;
     let projection = geoAlbersUsa();
