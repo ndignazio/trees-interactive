@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Scaffold</title>
+  <link rel="stylesheet" href="src/main.css" />
+</head>
+
+<body>
+  <h1 class="center">Explore Trees and Community Characteristics in New York</h1>
+  <div id="outer">
+    <div id="left">
+      <p>Median Income</p>
+      <div class="demographics">
+        <input class="check" type="checkbox" id="income_binned" value="Low">Low</input>
+        <input class="check" type="checkbox" id="income_binned" value="Medium">Medium</input>
+        <input class="check" type="checkbox" id="income_binned" value="High">High</input>
+      </div>
+      <p>Life Expectancy</p>
+      <div class="demographics">
+        <input class="check" type="checkbox" id="life_binned" value="Low">Low</input>
+        <input class="check" type="checkbox" id="life_binned" value="Medium">Medium</input>
+        <input class="check" type="checkbox" id="life_binned" value="High">High</input>
+      </div>
+      <p>Percent White</p>
+      <div class="demographics">
+        <input class="check" type="checkbox" id="Percent White" value="Low">Low</input>
+        <input class="check" type="checkbox" id="Percent White" value="Medium">Medium</input>
+        <input class="check" type="checkbox" id="Percent White" value="High">High</input>
+      </div>
+    </div>
+
+    <div id="app">
+      hello
+    </div>
+    <div id="right">
+      <p>Street Tree Density</p>
+      <div class="trees">
+        <input class="check" type="checkbox" id="tree_density" value="Low">Low</input>
+        <input class="check" type="checkbox" id="tree_density" value="Medium">Medium</input>
+        <input class="check" type="checkbox" id="tree_density" value="High">High</input>
+      </div>
+      <p>Number of Trees Not Alive</p>
+      <div class="trees">
+        <input class="check" type="checkbox" id="percent_not_alive" value="Low">Low</input>
+        <input class="check" type="checkbox" id="percent_not_alive" value="Medium">Medium</input>
+        <input class="check" type="checkbox" id="percent_not_alive" value="High">High</input>
+      </div>
+      <p>Average Tree Diameter</p>
+      <div class="trees">
+        <input class="check" type="checkbox" id="avg_tree_diam" value="Low">0-3.7</input>
+        <input class="check" type="checkbox" id="avg_tree_diam" value="Medium">3.7-5.8</input>
+        <input class="check" type="checkbox" id="avg_tree_diam" value="High">5.8+</input>
+      </div>
+    </div>
+  </div>
+  <script src="bundle.js"></script>
+</body>
+
+</html>
