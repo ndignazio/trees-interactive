@@ -97,7 +97,6 @@ json('./data/tracts.geojson').then(function (bb) {
     .append('select')
     .on('change', (event) => {
       borough = event.target.value;
-      console.log(borough)
       renderChart();
     })
     .selectAll('option')
@@ -191,10 +190,8 @@ json('./data/tracts.geojson').then(function (bb) {
         update =>
           update.call(el =>
             el
-              .attr('d', d => {
-                //                console.log(geoGenerator(d), d)
-                return geoGenerator(d)
-              })
+              .attr('d', geoGenerator
+              )
           ),
       )
       .attr('fill', 'white')
