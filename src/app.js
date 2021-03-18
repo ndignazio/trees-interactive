@@ -8,11 +8,9 @@ import { json, csv } from 'd3-fetch';
 import { geoPath, geoAlbersUsa } from 'd3-geo';
 
 import { mouse, pointer } from 'd3';
-import { tip } from 'd3-tip';
+//import { tip } from 'd3';
 // this command imports the css file, if you remove it your css wont be applied!
 //import './main.css';
-console.log('imported.')
-
 
 
 
@@ -47,6 +45,8 @@ function filterUpdate(data, filters, borough) {
   console.log("In filterUpdate")
   //console.log(data.features)
   filters.boro_name = [borough]
+  console.log("filters")
+  console.log(filters)
   //console.log(filters)
   return {
     ...data, features: data.features.filter(obj => {
@@ -68,14 +68,16 @@ function unique(data, key) {
   return Array.from(data.reduce((acc, row) => acc.add(row[key]), new Set()));
 }
 
-json('./data/tracts.geojson').then(function (bb) {
+Promise.all([
+  json('./data/tracts.geojson'),
+  json('./data/nyctracts.geojson'),
+]).then((results) => {
+  const [bb, tracts] = results;
+
+  //json('./data/tracts.geojson').then(function (bb) {
   //console.log(bb)
 
   //let filter = bb.features.filter(d => d.properties.cdeligibil === "I")
-
-
-
-
 
   let width = 500, height = 500;
 
@@ -91,13 +93,13 @@ json('./data/tracts.geojson').then(function (bb) {
   dropdowns.append('div').text(d => d);
 
   let columns = ['Manhattan', 'Staten Island', 'Queens', 'Bronx', 'Brooklyn']
-  let borough = null
+  let borough = 'Manhattan'
 
   dropdowns
     .append('select')
     .on('change', (event) => {
       borough = event.target.value;
-      renderChart();
+      //renderChart();
     })
     .selectAll('option')
     .data(dim => columns.map(column => ({ column, dim })))
@@ -107,8 +109,36 @@ json('./data/tracts.geojson').then(function (bb) {
       d.column === borough,
     );
 
+  let update = select("#update")
+
+  update.on("click", (e) => {
+    renderChart()
+  })
+
   let svg = select("#app").append('svg')
     .style("width", width).style("height", height);
+
+  let projection = geoAlbersUsa();
+  projection.fitSize([width, height], tracts);
+  let geoGenerator = geoPath()
+    .projection(projection);
+
+  svg.append('g').selectAll('path')
+    .data(tracts.features)
+    .join(
+      enter =>
+        enter
+          .append('path')
+          .attr('d', geoGenerator),
+      update =>
+        update.call(el =>
+          el
+            .attr('d', geoGenerator
+            )
+        ),
+    )
+    .attr('fill', 'white')
+    .attr('stroke', '#000')
 
   const svgContainer = select('#app')
     .append('div')
@@ -120,30 +150,6 @@ json('./data/tracts.geojson').then(function (bb) {
     .attr('id', 'tooltip')
     .style('display', 'none');
 
-  //const tooltip = tip().attr('class', 'd3-tip').html(function (d) { return d; });
-
-  var mouseover = function (d) {
-    Tooltip
-      .style("opacity", 1)
-      .select(this)
-      .style("stroke", "black")
-      .style("opacity", 1)
-  }
-  var mousemove = function (d) {
-    Tooltip
-      .html("The exact value of<br>this cell is: " + d.properties.GEO_ID)
-      .style("left", (d3.mouse(this)[0] + 70) + "px")
-      .style("top", (d3.mouse(this)[1]) + "px")
-  }
-  var mouseleave = function (d) {
-    Tooltip
-      .style("opacity", 0)
-      .select(this)
-      .style("stroke", "none")
-      .style("opacity", 0.8)
-  }
-
-
 
   function renderChart() {
 
@@ -151,11 +157,11 @@ json('./data/tracts.geojson').then(function (bb) {
     removeChildren(svg)
 
 
-    let filtered = { ...bb, features: bb.features.filter(d => d.properties.boro_name === borough) };
-    console.log("Attempting to show median income")
-    console.log(typeof (filtered))
-    console.log(bb)
-    console.log(filtered)
+    let filtered = { ...tracts, features: tracts.features.filter(d => d.properties.boro_name === borough) };
+    /*  console.log("Attempting to show median income")
+     console.log(typeof (filtered))
+     console.log(bb)
+     console.log(filtered) */
 
 
     const c = document.querySelectorAll(".check")
@@ -166,10 +172,8 @@ json('./data/tracts.geojson').then(function (bb) {
     console.log("f:")
     console.log(f)
 
-    console.log("in renderCHart()")
     const g = document.querySelector('svg');
-    console.log('svg')
-    console.log(g)
+
     removeChildren(g)
 
     let width = 500, height = 500;
@@ -200,6 +204,8 @@ json('./data/tracts.geojson').then(function (bb) {
       .attr('fill', 'white')
       .attr('stroke', '#000')
 
+    console.log("Just created basemap")
+
 
     svg.append('g').selectAll('path')
       .data(f.features)
@@ -216,25 +222,53 @@ json('./data/tracts.geojson').then(function (bb) {
       )
       .attr('fill', 'steelblue')
       .attr('stroke', '#000')
-      /* .on('mouseover', tooltip.show)
-      .on('mouseout', tooltip.hide) */
-      .on('mouseenter', (e, d) => {
-        const [x, y] = pointer(e)
+      /*       .on('mouseover', function (e, d) {
+              console.log(e)
+              tooltip
+                //.style("stroke", "forestgreen")
+                .style("stroke-width", "5px")
+                .style("opacity", 0.5)
+                .text("<p>Life Expectancy: " + d.properties.life_expectancy + "</p><div id='tipDiv'></div>")
+            })
+            .on('mouseout', function (d) {
+              tooltip
+                .style("stroke", "black")
+                .style("stroke-width", "1px")
+                .style("opacity", 1)
+            }) */
+      .on('mouseenter', (e, d) =>
+
         tooltip
-          .attr('transform', `translate(${x}, ${y})`)
           .style('display', 'block')
-          .style('right', `${e.offsetX}px`)
+          .style('left', `${e.offsetX}px`)
           .style('top', `${e.offsetY}px`)
-          .html(`<div><p>Census Tract ${d.properties.GEO_ID}</p>
-                      <p>Median Income: ${d.properties.median_income}</p>
-                      <p>Life Expectancy: ${d.properties.life_expectancy}</p>
-                      <p>Percent White: ${d.properties.percent_white}</p>
-                      <p>Street Trees per square foot: ${d.properties.trees_normalized}</p>
-                      </div>`)
-      })
+          .style('background-color', 'white')
+          .style('border-style', 'solid')
+          .html(`<div><p class="tip"><strong>Census Tract ${d.properties.GEO_ID}</strong></p>
+                    <p class="tip">Median Income: ${d.properties.median_income}</p>
+                    <p class="tip">Neighborhood: ${d.properties.ntaname}</p>
+                    <p class="tip">Life Expectancy: ${d.properties.life_expectancy}</p>
+                    <p class="tip">Percent White: ${Math.round(d.properties.percent_white * 100) / 100}</p>
+                    <p class="tip">Street Tree Density: ${d.properties.tree_density}</p>
+                    <p class="tip">Frequency of Dead Trees and Stumps: ${d.properties.percent_not_alive}</p>
+                    <p class="tip">Average Tree Diameter: ${d.properties.avg_tree_diam}</p>
+                    </div>`),
+        select(this)
+          .attr('fill', "black")
+      )
       .on('mouseleave', (e, d) => tooltip.style('display', 'none'))
       ;
+
+    /* svg.selectAll('path')
+      .transition()
+      .duration(2000) */
   }
 });
 
 
+/* .html(`<div><p>Census Tract ${d.properties.GEO_ID}</p>
+                    <p>Median Income: ${d.properties.median_income}</p>
+                    <p>Life Expectancy: ${d.properties.life_expectancy}</p>
+                    <p>Percent White: ${d.properties.percent_white}</p>
+                    <p>Street Trees per square foot: ${d.properties.trees_normalized}</p>
+                    </div>`) */

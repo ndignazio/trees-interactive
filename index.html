@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <title>NYC Street Trees</title>
   <link rel="stylesheet" href="src/main.css" />
+  <link rel="stylesheet" href="//rawgithub.com/Caged/d3-tip/master/examples/example-styles.css">
 </head>
 
 <body>
@@ -14,37 +15,43 @@
   <p>Check the boxes of interest, then select a borough from the dropdown.</p>
   <div id="outer">
     <div id="left">
-      <p>Median Income</p>
+      <p>Median Income*</p>
       <div class="demographics">
         <input class="check" type="checkbox" id="income_binned" value="Low">Low</input>
         <input class="check" type="checkbox" id="income_binned" value="Medium">Medium</input>
         <input class="check" type="checkbox" id="income_binned" value="High">High</input>
       </div>
-      <p>Life Expectancy</p>
+      <p>Life Expectancy at Birth*</p>
       <div class="demographics">
         <input class="check" type="checkbox" id="life_binned" value="Low">Low</input>
         <input class="check" type="checkbox" id="life_binned" value="Medium">Medium</input>
         <input class="check" type="checkbox" id="life_binned" value="High">High</input>
       </div>
-      <p>Percent White</p>
+      <p>Percent White*</p>
       <div class="demographics">
         <input class="check" type="checkbox" id="Percent White" value="Low">Low</input>
         <input class="check" type="checkbox" id="Percent White" value="Medium">Medium</input>
         <input class="check" type="checkbox" id="Percent White" value="High">High</input>
       </div>
+      <button type="button" id="update">Update Chart</button>
+      <p class="foot">*Values binned into quantiles.</p>
+      <p class="foot">Low: 0-0.33</p>
+      <p class="foot">Medium: 0.33-0.66</p>
+      <p class="foot">High: 0.66-1</p>
     </div>
+
 
     <div id="app">
 
     </div>
     <div id="right">
-      <p>Street Tree Density</p>
+      <p>Street Tree Density*</p>
       <div class="trees">
         <input class="check" type="checkbox" id="tree_density" value="Low">Low</input>
         <input class="check" type="checkbox" id="tree_density" value="Medium">Medium</input>
         <input class="check" type="checkbox" id="tree_density" value="High">High</input>
       </div>
-      <p>Number of Trees Not Alive</p>
+      <p>Number of Trees Not Alive*</p>
       <div class="trees">
         <input class="check" type="checkbox" id="percent_not_alive" value="Low">Low</input>
         <input class="check" type="checkbox" id="percent_not_alive" value="Medium">Medium</input>
@@ -52,13 +59,25 @@
       </div>
       <p>Average Tree Diameter</p>
       <div class="trees">
-        <input class="check" type="checkbox" id="avg_tree_diam" value="Low">0-3.7</input>
-        <input class="check" type="checkbox" id="avg_tree_diam" value="Medium">3.7-5.8</input>
-        <input class="check" type="checkbox" id="avg_tree_diam" value="High">5.8+</input>
+        <input class="check" type="checkbox" id="avg_tree_diam" value="0-3.7">0-3.7</input>
+        <input class="check" type="checkbox" id="avg_tree_diam" value="3.7-5.8">3.7-5.8</input>
+        <input class="check" type="checkbox" id="avg_tree_diam" value="5.8+">5.8+</input>
       </div>
+      <p class="foot">Source: </p>
+      <p><a class="foot" id="nyc" href="https://opendata.cityofnewyork.us/">NYC Open Data Portal</a></p>
+
+      <p><a class="foot" id="cdc" href="https://www.cdc.gov/nchs/nvss/usaleep/usaleep.html">U.S. Centers for Disease</a>
+      </p>
+      <p><a class="foot" href="https://www.cdc.gov/nchs/nvss/usaleep/usaleep.html">Control and Prevention</a></p>
+      <p><a class="foot" href="https://www.census.gov/programs-surveys/acs/">American Community Survey</a></p>
     </div>
   </div>
+
   <script src="bundle.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
+  <script src="https://unpkg.com/intersection-observer"></script>
+  <script src="https://unpkg.com/scrollama"></script>
 </body>
 
 </html>
